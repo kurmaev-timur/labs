@@ -62,10 +62,10 @@ public class RestServlet extends HttpServlet {
 		    //String log = "[[\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"вык\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"], [\"январь\", \"реле\", \"выкл\"]]";
 			try {
 				CallerController uncheckedCallerController = new UncheckedCallerController();
-				Context nag = Server.getContextManager().get("nag.test1", uncheckedCallerController);
-				log = nag.getVariable("log_array_table").clone().rec().getString("log_attay");
+				Context con1 = Server.getContextManager().get("con1.test1", uncheckedCallerController);
+				log = con1.getVariable("log_array_table").clone().rec().getString("log_attay");
 			} catch (ContextException ex) {
-				NagContextPlugin.LOGGER.warn(ex.getMessage());
+				Con1ContextPlugin.LOGGER.warn(ex.getMessage());
 			}
 			reply = log;
 		}
@@ -73,40 +73,40 @@ public class RestServlet extends HttpServlet {
 			try {
 				Integer critTemp = Integer.parseInt(request.getParameter("critTemp"));
 				CallerController uncheckedCallerController = new UncheckedCallerController();
-				Context nag = Server.getContextManager().get("nag.test1", uncheckedCallerController);
-				DataTable dtTemp = new SimpleDataTable(nag.getVariable("critical_table", uncheckedCallerController).getFormat());
+				Context con1 = Server.getContextManager().get("con1.test1", uncheckedCallerController);
+				DataTable dtTemp = new SimpleDataTable(con1.getVariable("critical_table", uncheckedCallerController).getFormat());
 				dtTemp.addRecord(critTemp);
-				nag.setVariable("critical_table", dtTemp);
+				con1.setVariable("critical_table", dtTemp);
 				reply = "ok";
 			} catch (ContextException ex) {
 				reply = "ko";
-				NagContextPlugin.LOGGER.warn(ex.getMessage());
+				Con1ContextPlugin.LOGGER.warn(ex.getMessage());
 			}
 		}
 		if (cmd.equals("onR")) {
 			try {
 				CallerController uncheckedCallerController = new UncheckedCallerController();
-				Context nag = Server.getContextManager().get("nag.test1", uncheckedCallerController);
-				DataTable rl = new SimpleDataTable(nag.getVariable("relay_state_table", uncheckedCallerController).getFormat());
+				Context con1 = Server.getContextManager().get("con1.test1", uncheckedCallerController);
+				DataTable rl = new SimpleDataTable(con1.getVariable("relay_state_table", uncheckedCallerController).getFormat());
 				rl.addRecord("0");
-				nag.setVariable("relay_state_table", rl);
+				con1.setVariable("relay_state_table", rl);
 				reply = "ok";
 			} catch (ContextException ex) {
 				reply = "ko";
-				NagContextPlugin.LOGGER.warn(ex.getMessage());
+				Con1ContextPlugin.LOGGER.warn(ex.getMessage());
 			}
 		}
 		if (cmd.equals("offR")) {
 			try {
 				CallerController uncheckedCallerController = new UncheckedCallerController();
-				Context nag = Server.getContextManager().get("nag.test1", uncheckedCallerController);
-				DataTable rl = new SimpleDataTable(nag.getVariable("relay_state_table", uncheckedCallerController).getFormat());
+				Context con1 = Server.getContextManager().get("con1.test1", uncheckedCallerController);
+				DataTable rl = new SimpleDataTable(con1.getVariable("relay_state_table", uncheckedCallerController).getFormat());
 				rl.addRecord("1");
-				nag.setVariable("relay_state_table", rl);
+				con1.setVariable("relay_state_table", rl);
 				reply = "ok";
 			} catch (ContextException ex) {
 				reply = "ko";
-				NagContextPlugin.LOGGER.warn(ex.getMessage());
+				Con1ContextPlugin.LOGGER.warn(ex.getMessage());
 			}
 		}
 		response.setContentType("application/json; charset=UTF-8");

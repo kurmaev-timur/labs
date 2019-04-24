@@ -1,0 +1,79 @@
+//Инициализация виганда
+
+public sub wiegand_init()
+
+		 ser.num=0
+		 ser.mode = PL_SER_MODE_WIEGAND
+		 ser.interchardelay = 10
+		 'ser.autoclose = YES
+		 ser.enabled = NO
+		 ser.rxbuffrq(0)
+		 ser.txbuffrq(1)
+		 sys.buffalloc
+		 ser.enabled = YES
+		 io.num= PL_IO_NUM_9_TX0
+		 io.enabled=YES
+		 io.num=PL_IO_NUM_0
+		 io.enabled=YES
+
+end sub
+
+//проверка статуса загрузки
+
+sub stg_boot()
+		dim status as en_stg_status_codes
+		dim s as string
+		dim step_num as byte
+		dim i as byte
+		stg_start()
+		status=stg_check_all(s)			
+		if status<>EN_STG_STATUS_OK then
+			step_num=0 
+			while status<>EN_STG_STATUS_OK and step_num<10
+				status=stg_restore_multiple(0)
+				step_num=step_num+1
+			wend
+			if status<>EN_STG_STATUS_OK then
+				mem_wipe()
+				sys.reboot
+			end if
+		end if
+end sub
+
+
+//работа с таймингом
+
+public sub pin_timer_control()
+dim i as byte
+	for i=0 to 11
+	'Проверяем время активности.
+		if (timer_signal(i).timer_tw > 0) then
+			'включение на определенное время при ti = 0 и tp = 0 
+			if (timer_signal(i).timer_ti = 0 and timer_signal(i).timer_tp = 0) then
+				pin_on(timer_signal(i).pin_num)
+			end if
+		'Проверяем время импульса включения.
+			if (timer_signal(i).timer_ti > 0) then
+				'pin on
+				pin_on(timer_signal(i).pin_num)
+				timer_signal(i).timer_ti= timer_signal(i).timer_ti - 1			
+			'Проверяем время паузы. 
+			else if (timer_signal(i).timer_tp > 0) then
+				'pin off
+				pin_off(timer_signal(i).pin_num)
+				timer_signal(i).timer_tp = timer_signal(i).timer_tp - 1
+			else
+				timer_signal(i).timer_ti = timer_signal(i).ti
+				timer_signal(i).timer_tp = timer_signal(i).tp
+			end if
+				timer_signal(i).count = timer_signal(i).count +1		
+				timer_signal(i).timer_tw = timer_signal(i).timer_tw - 1
+		else
+			if (timer_signal(i).count > 0) then
+				pin_off(timer_signal(i).pin_num)
+				timer_signal(i).sig_take = NO
+				timer_signal(i).count = 0
+			end if
+		end if
+	next i
+end sub

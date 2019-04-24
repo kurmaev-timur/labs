@@ -97,3 +97,4 @@ public class %ScriptClassNamePattern% implements FunctionImplementation
       return null;
   }
 }
+ 

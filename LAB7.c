@@ -8,7 +8,7 @@
 #include <windows.h>
 #include <string>
 #include <windows.h>
-using namespace std;
+using namespace std; 
 bool is8number(char *str)
 {
     bool b=false;
